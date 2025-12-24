@@ -1,6 +1,6 @@
 import express from "express";
+import Users from "./users.json" assert { type: 'json' };
 import fs from "fs";
-import pool from "./db.js";
 
 const app = express();
 const PORT = 8010;
@@ -19,66 +19,56 @@ app.use((req,res,next)=>{
 })
 
 //Hybrid server for mobile part
-app.get("/users",async (req,res)=>{
-    const allUsers = await pool.query(`SELECT * FROM "user";`);
+app.get("/users",(req,res)=>{
     const html =`<ul>
-      ${allUsers.rows.map((user)=>`<li>${user.first_name}-${user.email}</li>`).join("")}
+      ${Users.map((user)=>`<li>${user.first_name}</li>`).join("")}
     </ul>`
     res.send(html)
 })
 
 //Rest APIs
-app.get("/api/users", async(req,res)=>{
-    const allUsers = await pool.query (`SELECT * FROM "user"`);
-    return res.json(allUsers.rows)
+app.get("/api/users",(req,res)=>{
+    return res.json(Users)
 });
 
-app.route("/api/users/:id").get(async(req,res)=>{
-    const result = await pool.query(`SELECT * FROM "user" WHERE id = $1`,[req.params.id]);
-    const user = result.rows[0];
-    return res.json(user);
-}).patch(async (req,res)=>{
+app.route("/api/users/:id").get((req,res)=>{
     const id = Number(req.params.id);
-    const data = req.body;
-    
-    try{
-      const result = await pool.query(`UPDATE "user" SET first_name = $1, last_name = $2, email = $3 WHERE id = $4 RETURNING *`,[data.first_name, data.last_name,data.email,id]);
-      return res.json({message: "User Updated!!"})
-    }
-    catch(err){
-      return res.status(500).json({message:"Updation failed "})
-    }
+    const user = Users.find(user => user.id === id);
+    return res.json(user);
+}).patch((req,res)=>{
+    const id = Number(req.params.id);
+    const user = Users.find(user => user.id === id);
 
-}).delete(async(req,res)=>{
+    Object.assign(user,req.body);
+
+    fs.writeFile("./users.json",JSON.stringify(Users),(err)=>{
+        if (err){
+            console.log(err)
+        }
+        return res.json({status:"Updated!!"})
+    })
+}).delete((req,res)=>{
    const id = Number(req.params.id);
-   
-   try{
-    const result = await pool.query(`DELETE FROM "user" WHERE id = $1 RETURNING *`,[id]);
+   const index = Users.findIndex(user => user.id === id);
 
-    if(result.rowCount == 0){
-        return res.status(400).json({message:"User not found"})
+   if(index !== -1){
+    Users.splice(index,1)
+   }
+  
+   fs.writeFile("./users.json", JSON.stringify(Users),(err)=>{
+    if(err){
+        console.log(err)
     }
-    return res.status(201).json({message:"User deleted!!"})
-
-   }
-   catch(err){
-    return res.status(500).json({message:"Could not Update"})
-   }
+    return res.json({status:"Success!!"})
+   })
 });
 
-app.post('/api/users', async(req,res)=>{
+app.post('/api/users',(req,res)=>{
     const data = req.body;
-    if(!data || !data.first_name || !data.email){
-      return  res.status(400).json({message:"All should be filled"})
-    }
-    try{
-      const result = await pool.query(`INSERT INTO "user" (first_name, last_name, email) VALUES ($1, $2, $3) RETURNING *`,[data.first_name, data.last_name, data.email]);
-
-      return res.status(201).json({message:"User Stored!!"})
-    }
-    catch(err){
-     return res.status(500).json({status:"User creation failed!"})
-    }
+    Users.push({id:Users.length + 1 , ...data});
+    fs.writeFile("./users.json",JSON.stringify(Users),(err,data)=>{
+        return res.json({status:"Success!!"})
+    })
 });
 
 

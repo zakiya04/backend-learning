@@ -2,16 +2,11 @@
   "name": "node",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "module",
+  "type":"module",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "express": "^5.2.1",
-    "nodemon": "^3.1.11",
-    "pg": "^8.16.3"
-  }
+  "description": ""
 }
