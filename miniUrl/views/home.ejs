@@ -1,11 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <style>
+        body{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
 </head>
 <body>
-    <h1>Hello from home page</h1>
+    <h1>URL Shortner</h1>
+    <form method="POST" action="/url">
+        <label>Enter The URL You Wanna Change</label>
+        <input placeholder="http://example.com" type="text" name="url"/>
+        <button type="submit">Generate</button>
+    </form>
+    <% if (locals.id) { %>
+     <p>This Is Your Url: http://localhost:1000/url/<%=id%></p>
+    <% } %>
+    <% if (locals.urls) { %>
+      <table>
+        <thead>
+            <tr>
+            <th>S.no</th>
+            <th>Short One</th>
+            <th>Real One</th>
+            <th>Clicked</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% urls.forEach((url,index) => { %>
+                <tr>
+                   <td><%= index + 1 %></td>
+                   <td><%= url.short_url %></td>
+                    <td><%= url.redirect_url %></td>
+                    <td><%= url.visit_history.length %></td>
+                </tr>
+             
+            <% }) %>
+        </tbody>
+      </table>
+    <% } %>
 </body>
 </html>
