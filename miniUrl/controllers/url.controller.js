@@ -11,7 +11,7 @@ export async function handleCreateUrl(req,res){
 
     try{
     const newUrl = await createUrl(url,shortUrl);
-    return res.status(201).json({Created: newUrl})
+    return res.render('home',{id:newUrl.short_url})
     }
     catch(err){
       console.log(err)
@@ -20,14 +20,15 @@ export async function handleCreateUrl(req,res){
 };
 
 export async function handleGetUrl(req,res){
-   const url = req.params.shorturl;
-
+   const url = req.params.shortId;
+   
     if(!url){
     return res.status(400).json({message:"Enter your url"});
    }
 
    try{
     const realUrl = await getUrl(url);
+     console.log(realUrl);
     return res.redirect(realUrl.redirect_url)
   }
    catch(err){
@@ -60,10 +61,10 @@ export async function handleGetUrls(req,res){
     if(!urls){
     return res.status(400).json({message:"Couldnt get urls"})
     }
-    return res.render('home')
+    return res.render('home',{urls})
   }
   catch(err){
     console.log(err);
    return res.status(500).json({message:"Couldn't Get the urls"})
   }
-}
+};
