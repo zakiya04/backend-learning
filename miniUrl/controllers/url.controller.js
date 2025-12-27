@@ -3,6 +3,7 @@ import {nanoid} from "nanoid";
 
 export async function handleCreateUrl(req,res){
     const {url} = req.body;
+    const creater = req.user.id;
     const shortUrl = nanoid(8);
 
     if(!url){
@@ -10,7 +11,7 @@ export async function handleCreateUrl(req,res){
     }
 
     try{
-    const newUrl = await createUrl(url,shortUrl);
+    const newUrl = await createUrl(url,shortUrl, creater);
     return res.render('home',{id:newUrl.short_url})
     }
     catch(err){
@@ -54,9 +55,9 @@ export async function handleAnalytics(req,res){
 };
 
 export async function handleGetUrls(req,res){
-
+  const creater = req.user.id;
   try{
-    const urls = await getAllUrls();
+    const urls = await getAllUrls(creater);
 
     if(!urls){
     return res.status(400).json({message:"Couldnt get urls"})
