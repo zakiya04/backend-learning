@@ -1,7 +1,9 @@
 import express from 'express';
-import { handleCreateUrl } from '../controllers/url.controller.js';
+import { handleCreateUrl, handleAnalytics, handleGetUrl} from '../controllers/url.controller.js';
 
-export const router = express.Router();
+export const urlRouter = express.Router();
 
-router.post('/',handleCreateUrl)
+urlRouter.post('/', handleCreateUrl);
+urlRouter.get('/:shortId', handleGetUrl);
+urlRouter.get("/analytics/:shorturl", handleAnalytics)
 
