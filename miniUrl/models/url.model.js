@@ -1,8 +1,8 @@
 import pool from "../connection.js";
 
 
-export async function createUrl(redirectUrl, shortUrl){
-  const result = await pool.query("INSERT INTO miniurl (short_url, redirect_url) VALUES($1, $2) RETURNING *",[shortUrl, redirectUrl]);
+export async function createUrl(redirectUrl, shortUrl, creater){
+  const result = await pool.query("INSERT INTO miniurl (short_url, redirect_url, created_by) VALUES($1, $2, $3) RETURNING *",[shortUrl, redirectUrl, creater]);
   return result.rows[0];
 };
 
@@ -16,7 +16,7 @@ export async function getClicks(url){
   return result.rows[0].visit_history.length;
 };
 
-export async function getAllUrls(){
-  const result = await pool.query("SELECT * FROM miniurl");
+export async function getAllUrls(creater){
+  const result = await pool.query("SELECT * FROM miniurl WHERE created_by = $1",[creater]);
   return result.rows;
 }
