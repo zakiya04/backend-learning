@@ -4,9 +4,8 @@ import { handleGetUrls } from '../controllers/url.controller.js';
 const homeRouter = express.Router();
 
 homeRouter.get('/',(req,res)=>{
-    if(!req.body) return res.redirect('/login');
-
- handleGetUrls(req,res)
+    if(! req.user) return res.redirect('/login');
+    handleGetUrls(req,res);
 });
 
 

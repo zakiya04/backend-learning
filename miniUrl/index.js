@@ -11,10 +11,10 @@ const PORT = 1000
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
-app.use(cookieParser())
+app.use(cookieParser());
 
 app.set("view engine","ejs");
-app.set("views",path.resolve("./views"))
+app.set("views",path.resolve("./views"));
 
 
 app.use("/url",restictUserLoggedInOnly, urlRouter);
@@ -22,4 +22,4 @@ app.use("/",checkAuth, homeRouter);
 app.use('/user', userRoute);
 
 
-app.listen(PORT,()=> console.log("Server is Running!"))
+app.listen(PORT,()=> console.log("Server is Running!"));

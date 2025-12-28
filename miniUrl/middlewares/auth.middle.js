@@ -1,4 +1,4 @@
-import { getUser } from "../service/auth.service";
+import { getUser } from "../service/auth.service.js";
 
 export async function restictUserLoggedInOnly(req, res, next){
   const userId = req.cookies.uuid;

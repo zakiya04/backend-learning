@@ -60,7 +60,7 @@ export async function handleGetUrls(req,res){
     const urls = await getAllUrls(creater);
 
     if(!urls){
-    return res.status(400).json({message:"Couldnt get urls"})
+    return res.status(400).json({message:"Couldnt get urls"});
     }
     return res.render('home',{urls})
   }

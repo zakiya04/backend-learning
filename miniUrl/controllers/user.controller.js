@@ -21,11 +21,11 @@ export async function handleSignUp(req,res){
 export async function handleLogIn(req,res){
   const {email,password} = req.body;
   if (!email || !password){
-    res.render('login',{message: "credentials not applied"})
+    return res.render('login',{message: "credentials not applied"});
   };
   
   try{
-    const user = await logIn(email.password);
+    const user = await logIn(email, password);
 
     const sessionId = uuidv4();
     setUser(sessionId,user);
