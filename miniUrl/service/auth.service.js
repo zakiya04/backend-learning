@@ -1,12 +1,20 @@
-const sessionUser = new Map();
+import jwt from 'jsonwebtoken';
 
-export function setUser(id,user){
+const secret = "!password&$";
 
-  return sessionUser.set(id,user);
+export function setUser(user){
+
+return jwt.sign({
+  id: user.id,
+  email: user.email,
+},secret)
 };
 
-export function getUser(id){
+export function getUser(token){
 
- return  sessionUser.get(id);
+if(!token) return null;
+
+return jwt.verify(token,secret)
+
 };
 

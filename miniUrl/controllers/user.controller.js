@@ -27,11 +27,9 @@ export async function handleLogIn(req,res){
   try{
     const user = await logIn(email, password);
 
-    const sessionId = uuidv4();
-    setUser(sessionId,user);
-    res.cookie("uuid",sessionId)
-
-    return res.redirect('/')
+    const token = setUser(user);
+    res.cookie("token", token);
+    return res.redirect('/');
   }
   catch(err){
    console.log(err);

@@ -18,5 +18,6 @@ export async function getClicks(url){
 
 export async function getAllUrls(creater){
   const result = await pool.query("SELECT * FROM miniurl WHERE created_by = $1",[creater]);
+  console.log(result.rows)
   return result.rows;
 }
