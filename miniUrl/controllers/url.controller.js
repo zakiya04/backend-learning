@@ -22,18 +22,18 @@ export async function handleCreateUrl(req,res){
 
 export async function handleGetUrl(req,res){
    const url = req.params.shortId;
-   
+
     if(!url){
     return res.status(400).json({message:"Enter your url"});
    }
 
    try{
     const realUrl = await getUrl(url);
-     console.log(realUrl);
+     console.log("ye hai real wala",realUrl);
     return res.redirect(realUrl.redirect_url)
   }
    catch(err){
-    console.log(err);
+    console.log("ye raha error",err);
     res.status(500).json({message:"Could not get the URL"})
   }
    
