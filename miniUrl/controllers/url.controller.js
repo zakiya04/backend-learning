@@ -12,10 +12,9 @@ export async function handleCreateUrl(req,res){
 
     try{
     const newUrl = await createUrl(url,shortUrl, creater);
-    return res.render('home',{id:newUrl.short_url})
+    return res.render('home',{id: newUrl.short_url})
     }
     catch(err){
-      console.log(err)
      return res.status(500).json({message:"Could'nt Create URL!"})
     }
 };
@@ -29,11 +28,10 @@ export async function handleGetUrl(req,res){
 
    try{
     const realUrl = await getUrl(url);
-     console.log("ye hai real wala",realUrl);
     return res.redirect(realUrl.redirect_url)
   }
    catch(err){
-    console.log("ye raha error",err);
+    console.log(err);
     res.status(500).json({message:"Could not get the URL"})
   }
    
