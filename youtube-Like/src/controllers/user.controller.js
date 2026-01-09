@@ -209,3 +209,48 @@ export const changeCredentials = asyncHandler(async (req,res)=>{
 
    return res.status(200).json(new ApiResponse(200, user, "User Update!"))
 });
+
+export const getUserProfile = asyncHandler(async(req,res)=>{
+    const {username} = req.params;
+    if(!username) throw new ApiError(400, "Username not found!");
+
+    const channel = await User.aggregate([
+        {
+            $match:{username:username?.toLowerCase()}
+        },
+        {
+            $lookup:{from:"subscriptions",localField: "_id", foreignField:"channels", as: "subscribers"}
+        },
+        {
+            $lookup:{from:"subscriptions",localField: "_id", foreignField:"subscriber", as: "subscribedTo"}
+        },
+        {
+            $addFields:{
+                subscribersCount:{ $size: "$subscribers" },
+                channelsSubToCount:{ $size: "$subscribedTo" },
+                isSubscribed:{ $cond:{
+                    if: { $in:[req.user?._id, "$subsribers.subscribe"]},
+                    then: true,
+                    else: false
+                } 
+                }
+            }
+        },
+        {
+            $project:{
+                fullName:1,
+                email:1,
+                username:1,
+                coverImahe:1,
+                avatar:1,
+                subscribersCount:1,
+                channelsSubToCount: 1,
+                isSubscribed: 1
+            }
+        }
+    ])
+
+    if(!channel) throw new ApiError(500,"channel does not exist")
+
+    return res.status(200).json(new ApiResponse(200, channel[0], "User Channel Fetched!"));
+});
